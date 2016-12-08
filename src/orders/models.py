@@ -84,16 +84,14 @@ class UserAddress(models.Model):
 		return "%s, %s, %s, %s, %s" %(self.street, self.city, self.state, self.country, self.zipcode)
 
 
-ORDER_STATUS_CHOICES = (
-	('created', 'Created'),
-	('paid', 'Paid'),
-	('shipped', 'Shipped'),
-	('refunded', 'Refunded'),
-)
+
 
 class Carrier(models.Model):
 	name = models.CharField(max_length=120)
 	link = models.URLField(null=True, blank=True)
+
+	def __unicode__(self):
+		return self.name
 
 class ShippingCost(models.Model):
 	name = models.CharField(max_length=120)
@@ -106,19 +104,46 @@ class ShippingCost(models.Model):
 	def __unicode__(self):
 		return self.name		
 
+COUPON_CHOICES = (
+	('%', '%'),
+	('$', '$'),
+	('free shipping', 'Free Shipping'),
+)
+
+class CouponCode(models.Model):
+	name = models.CharField(max_length=12)
+	status = models.CharField(max_length=15, choices=COUPON_CHOICES, default='$')
+	discount_value = models.DecimalField(decimal_places=2, max_digits=5)
+	start_date = models.DateField(null=True, blank=True)
+	expiration_date = models.DateField(null=True, blank=True)
+
+	def __unicode__(self):
+		return self.name
+
+ORDER_STATUS_CHOICES = (
+	('created', 'Created'),
+	('paid', 'Paid'),
+	('shipped', 'Shipped'),
+	('refunded', 'Refunded'),
+)
+
 class Order(models.Model):
 	status = models.CharField(max_length=120, choices=ORDER_STATUS_CHOICES, default='created')
 	cart = models.ForeignKey(Cart)
 	user = models.ForeignKey(UserCheckout, null=True)
 	
 	shipping_address = models.ForeignKey(UserAddress, related_name='shipping', null=True)
+	shipping_location_cost = models.ForeignKey(ShippingCost, null=True, blank=True)
 	shipping_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-	shipping_location_cost = models.ForeignKey(ShippingCost, null=True, blank=True,)
-	order_total = models.DecimalField(max_digits=50, decimal_places=2 )
+
+	coupon = models.ForeignKey(CouponCode, null=True, blank=True)
+	
+	order_total = models.DecimalField(max_digits=50, decimal_places=2)
 	order_id = models.CharField(max_length=20, null=True, blank=True)
 	order_weight = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	tracking_number = models.CharField(max_length=120, null=True, blank=True)
 	shipping_carrier = models.ForeignKey(Carrier, null=True, blank=True)
+
 
 	def __unicode__(self):
 		return str(self.cart.id)

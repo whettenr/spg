@@ -32,11 +32,15 @@ class OrderDetail(DetailView):
 # view of all orders associated with a registered user
 class OrderList(LoginRequiredMixin, ListView):
 	queryset = Order.objects.all()
-
+	template_name = "orders/order_list.html"
 	def get_queryset(self):
 		user_check_id = self.request.user.id
-		user_checkout = UserCheckout.objects.get(id=user_check_id)
-		return super(OrderList, self).get_queryset().filter(user=user_checkout)
+		try:
+			user_checkout = UserCheckout.objects.get(id=user_check_id)
+			return super(OrderList, self).get_queryset().filter(user=user_checkout)
+		except:
+			user_checkout=None
+			return None
 
 # view to create address
 class UserAddressCreateView(CreateView):

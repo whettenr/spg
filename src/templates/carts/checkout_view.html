@@ -76,7 +76,27 @@ braintree.setup(clientToken, "dropin", {
 <hr>
 </div>
 </div>
+
+
+<div class="row">
+<div class='col-sm-6 offset-sm-3 text-center'>
+	<form id="coupon"  method='POST' action="">{% csrf_token %}
+	<div class="form-group row">
+		<label class="col-xs-2 col-form-label">Coupon Code</label>
+		<div class="col-xs-10">
+		<input class="form-control" type="text" value="Enter code here" id="example-text-input">
+	</div>
+	<br>
+	<p><b><button class="btn btn-primary" type='submit'>Apply Coupon</button></b>
+	</p>
+	</form>
+</div>
+</div>
+
+
+
 <br>
+
 <div class="row">
 <div class='col-sm-6 offset-sm-3 text-center'>
 <h4>Pay by card or PayPal</h4>
