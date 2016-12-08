@@ -1,0 +1,39 @@
+<div class="row">
+<h3>Order {% if order.order_id %}# {{ order.order_id }}{% endif %} Summary</h3>
+
+{% if order.status != 'created' %}
+<h3>Order Status <em style="color:red">{{ order.status }}</em></h3>
+{% endif %}
+
+{% if order.shipping_carrier %}
+	<h3>Shipped using {{ order.shipping_carrier.name }}</h3>
+	{% if order.shipping_carrier %}
+		<a href="{{order.shipping_carrier.link}}">Tack Package here</a>
+	{% endif %}
+{% endif %}
+
+{% if order.status == "shipped" and order.tracking_number %}
+	<h4>Tracking number: {{ order.tracking_number }}</h4>
+{% endif %}
+<br>
+
+
+<table class='table'>
+
+<tr><td>{{ order.cart.cartitem_set.count }} Item(s): <br/>{% for i in order.cart.cartitem_set.all %}
+<b>{{ i.item.get_title }}</b><br/>
+{% endfor %}</td></tr>
+<tr><td>Cart Subtotal: {{ order.cart.subtotal }}</td></tr>
+<tr><td>Tax: {{ order.cart.tax_total }}</td></tr>
+<tr><td>Items Total: {{ order.cart.total }}</td></tr>
+
+<tr><td>Shipping: {{ order.shipping_price }}</td></tr>
+<tr><td>Order Total: {{ order.order_total }}</td></tr>
+
+</table>
+</div>
+
+<p><b>Shipping to</b>
+<br/>
+{{ order.shipping_address.get_address }}
+</p>
