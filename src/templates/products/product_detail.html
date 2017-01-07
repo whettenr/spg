@@ -115,7 +115,7 @@ $("#cart-btn").click(function(event){
     	values[field.name] = field.value;
 	});
 	var formData = 'item='+getId()+'&'+'qty='+values['qty']
-	console.log(formData+ 'formData'); 
+	console.log(formData); 
 	$.ajax({
 		type: "GET", // "POST"
 		url: "{% url 'cart' %}",
@@ -164,6 +164,9 @@ $("#cart-btn").click(function(event){
 
 <p class='lead'>
 {{ object.description|safe }}
+{% if request.user.is_staff %}
+<a href="{% url 'product_inventory' pk=object.pk %}" class="btn btn-block btn-outline-danger">View inventory</a>
+{% endif %}
 </p>
 </div>
 
@@ -204,7 +207,7 @@ $("#cart-btn").click(function(event){
 <br/>
 <hr/>
 <p>
-Share<br/>
+Share</p><br/>
 <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
 <i class="fa fa-facebook-square fa-3x"></i></a>
 
@@ -233,9 +236,6 @@ Share<br/>
 
 </div>
 <!-- End Product Sidebar -->
-
-
-
 
 </div>
 
