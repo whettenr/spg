@@ -33,8 +33,6 @@ if settings.DEBUG:
       private_key=settings.BRAINTREE_PRIVATE)
 
 
-
-
 class ItemCountView(View):
 	def get(self, request, *args, **kwargs):
 		if request.is_ajax():
@@ -198,6 +196,8 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 			return self.form_valid(form)
 		else:
 			return self.form_invalid(form)
+		# if '_coupon' in self.request.POST:
+		# 	print "coupon code submit"
 
 	def get_success_url(self):
 		return reverse("checkout")
