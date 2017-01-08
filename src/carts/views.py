@@ -198,8 +198,8 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
         if coupon_form.is_valid():
 		# coupon_form = self.coupon_form
 		# if '_coupon' in self.request.POST:
-		 	print 'Goodbye, cruel world!'
-	 		print coupon_form.cleaned_data['coupon_code']
+			print 'Goodbye, cruel world!'
+			print coupon_form.cleaned_data['coupon_code']
 
 
 		if form.is_valid():
