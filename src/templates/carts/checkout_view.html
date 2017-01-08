@@ -84,7 +84,7 @@ braintree.setup(clientToken, "dropin", {
 	<div class="form-group row">
 		<label class="col-xs-2 col-form-label">Coupon Code</label>
 		<div class="col-xs-10">
-		<input class="form-control" type="text" value="Enter code here" id="example-text-input">
+		<input class="form-control" type="text" placeholder="Enter Coupon Code" id="coupon-input">
 	</div>
 	<br>
 	<input class='btn btn-primary' type='submit' value='Coupon' name='_coupon'/>
@@ -95,7 +95,11 @@ braintree.setup(clientToken, "dropin", {
 </div>
 </div>
 
-
+<form action="" method="POST">
+    {% csrf_token %}
+    {{ coupon_form|crispy}}
+    <input type="submit" value="Submit" name='_coupon' />
+</form>
 
 <br>
 

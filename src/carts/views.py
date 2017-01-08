@@ -15,6 +15,7 @@ from django.views.generic.edit import FormMixin
 
 
 from orders.forms import GuestCheckoutForm
+from order.forms import CouponForm
 from orders.mixins import CartOrderMixin
 from orders.models import UserCheckout, Order, UserAddress
 
@@ -150,7 +151,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 	model = Cart
 	template_name = "carts/checkout_view.html"
 	form_class = GuestCheckoutForm
-
+	coupon_form = CouponForm
 	def get_object(self, *args, **kwargs):
 		cart = self.get_cart()
 		if cart == None:
@@ -184,12 +185,17 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		context["order"] = self.get_order()
 		context["user_can_continue"] = user_can_continue
 		context["form"] = self.get_form()
+		context["coupon_form"] = coupon_form
 		return context
 
 	def post(self, request, *args, **kwargs):
 		print 'cruel world!'
 		self.object = self.get_object()
 		form = self.get_form()
+		if '_coupon' in self.request.POST:
+		 	print 'Goodbye, cruel world!'
+			if coupon_form.is_valid():
+		 		print coupon_form.cleaned_data['coupon_code']
 		if form.is_valid():
 			email = form.cleaned_data.get("email")
 			user_checkout, created = UserCheckout.objects.get_or_create(email=email)
@@ -197,8 +203,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 			return self.form_valid(form)
 		else:
 			return self.form_invalid(form)
-		if '_coupon' in self.request.POST:
-		 	print 'Goodbye, cruel world!'
+		
 
 	def get_success_url(self):
 		return reverse("checkout")

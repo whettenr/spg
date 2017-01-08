@@ -42,7 +42,8 @@ class UserAddressForm(forms.ModelForm):
 		]
 		widgets = {'country': forms.HiddenInput(), 'state': forms.HiddenInput()}
 
-
+class CouponForm(forms.Form):
+    coupon_code = forms.CharField(label='Enter Coupon Code', max_length=12)
 
 
 
