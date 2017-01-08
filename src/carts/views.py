@@ -188,15 +188,6 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		context["coupon_form"] = self.coupon_form
 		return context
 
-	def apply_coupon(CouponCode, self, request, *args, **kwargs):
-		order = self.get_order()
-		if order.coupon:
-			messages.error(self.request, "A coupon has already been applied to this order")
-		else: 
-			order.coupon = CouponCode
-			order.save()
-
-
 	def post(self, request, *args, **kwargs):
 		print 'cruel world!'
 		self.object = self.get_object()
@@ -218,7 +209,12 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 				messages.error(self.request, "Coupon Code was not found")
 			else:
 				messages.success(self.request, "YAY!!")
-				self.apply_coupon(check, self, request, *args, **kwargs)
+				order = self.get_order()
+				if order.coupon:
+					messages.error(self.request, "A coupon has already been applied to this order")
+				else: 
+					order.coupon = CouponCode
+					order.save()
 
 
 
