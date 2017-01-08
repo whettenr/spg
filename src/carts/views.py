@@ -151,7 +151,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 	model = Cart
 	template_name = "carts/checkout_view.html"
 	form_class = GuestCheckoutForm
-	coupon_form = CouponForm()
+	coupon_form = CouponForm
 	def get_object(self, *args, **kwargs):
 		cart = self.get_cart()
 		if cart == None:
@@ -185,7 +185,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		context["order"] = self.get_order()
 		context["user_can_continue"] = user_can_continue
 		context["form"] = self.get_form()
-		context["coupon_form"] = coupon_form
+		context["coupon_form"] = self.coupon_form
 		return context
 
 	def post(self, request, *args, **kwargs):
