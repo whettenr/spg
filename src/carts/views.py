@@ -218,7 +218,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 				messages.error(self.request, "Coupon Code was not found")
 			else:
 				messages.success(self.request, "YAY!!")
-				apply_coupon(check, self, *args, **kwargs)
+				self.apply_coupon(check, self, *args, **kwargs)
 
 
 
