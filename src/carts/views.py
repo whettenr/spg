@@ -17,7 +17,7 @@ from django.views.generic.edit import FormMixin
 from orders.forms import GuestCheckoutForm
 from orders.forms import CouponForm
 from orders.mixins import CartOrderMixin
-from orders.models import UserCheckout, Order, UserAddress
+from orders.models import CouponCode, Order, UserAddress, UserCheckout
 
 from products.models import Variation
 
@@ -200,6 +200,17 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		# if '_coupon' in self.request.POST:
 			print 'Goodbye, cruel world!'
 			print coupon_form.cleaned_data['coupon_code']
+			code = coupon_form.cleaned_data['coupon_code']
+			try:
+				check = CouponCode.objects.get(name=code)
+			except:
+				check = None
+			if check == None:
+				messages.error(self.request, "Coupon Code was not found")
+			else:
+				messages.success(self.request, "YAY!!")
+
+
 
 		if form.is_valid():
 			email = form.cleaned_data.get("email")

@@ -111,7 +111,7 @@ COUPON_CHOICES = (
 )
 
 class CouponCode(models.Model):
-	name = models.CharField(max_length=12)
+	name = models.CharField(max_length=12, unique=True)
 	status = models.CharField(max_length=15, choices=COUPON_CHOICES, default='$')
 	discount_value = models.DecimalField(decimal_places=2, max_digits=5)
 	start_date = models.DateField(null=True, blank=True)
