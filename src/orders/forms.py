@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth import get_user_model
 
 from .models import UserAddress
-from .models import CouponCode
 
 
 User = get_user_model()
@@ -43,11 +42,13 @@ class UserAddressForm(forms.ModelForm):
 		]
 		widgets = {'country': forms.HiddenInput(), 'state': forms.HiddenInput()}
 
-class CouponForm(forms.ModelForm):
-	class Meta:
-		model = CouponCode
-		fields = [
-			'name'
-		]
+class CouponForm(forms.Form):
+    coupon_code = forms.CharField(label='Enter Coupon Code', max_length=12)
 
+# class CouponForm(forms.ModelForm):
+# 	class Meta:
+# 		model = CouponCode
+# 		fields = [
+# 			'name'
+# 		]
 
