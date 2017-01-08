@@ -213,7 +213,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 				if order.coupon:
 					messages.error(self.request, "A coupon has already been applied to this order")
 				else: 
-					order.coupon = CouponCode
+					order.coupon = check
 					order.save()
 
 
