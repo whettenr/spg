@@ -197,7 +197,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		else:
 			return self.form_invalid(form)
 		if '_coupon' in self.request.POST:
-		 	print "coupon code submit"
+		 	print >>sys.stderr, 'Goodbye, cruel world!'
 
 	def get_success_url(self):
 		return reverse("checkout")
