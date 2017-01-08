@@ -193,6 +193,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 			email = form.cleaned_data.get("email")
 			user_checkout, created = UserCheckout.objects.get_or_create(email=email)
 			request.session["user_checkout_id"] = user_checkout.id
+			print >>sys.stderr, 'cruel world!'
 			return self.form_valid(form)
 		else:
 			return self.form_invalid(form)
