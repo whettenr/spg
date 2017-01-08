@@ -151,7 +151,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 	model = Cart
 	template_name = "carts/checkout_view.html"
 	form_class = GuestCheckoutForm
-	coupon_form = CouponForm
+	coupon_form = CouponForm()
 	def get_object(self, *args, **kwargs):
 		cart = self.get_cart()
 		if cart == None:
