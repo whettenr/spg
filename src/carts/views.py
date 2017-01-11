@@ -225,7 +225,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 						elif order.coupon.status == '$':
 							order.order_total = order.order_total - check.discount_value
 						else:
-							order.order_total = order.order_total - order.order_shipping_price
+							order.order_total = order.order_total - order.shipping_price
 						order.save()
 
 
