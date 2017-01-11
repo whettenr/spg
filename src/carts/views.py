@@ -216,13 +216,13 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 				else:
 					if check.start_date < date.today():
 						messages.error(self.request, "This coupon code has not been inititated yet. Contact us for more info.")
-					else if check.expiration_date > date.today():
+					elif check.expiration_date > date.today():
 						messages.error(self.request, "This coupon code has been expired.")
 					else:
 						order.coupon = check
 						if order.coupon.status == '%':
 							order_total = order.order_toal - order.order_total * (check.discount_value/100)
-						else if order.coupon.status == '$':
+						elif order.coupon.status == '$':
 							order.order_total = order.order_total - check.discount_value
 						else order.coupon.status == 'free shipping':
 							order.order_total = order.order_total - order.order_shipping_price
