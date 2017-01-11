@@ -224,7 +224,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 							order_total = order.order_toal - order.order_total * (check.discount_value/100)
 						elif order.coupon.status == '$':
 							order.order_total = order.order_total - check.discount_value
-						else order.coupon.status == 'free shipping':
+						else:
 							order.order_total = order.order_total - order.order_shipping_price
 						order.save()
 
