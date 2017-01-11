@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.conf import settings
+from django import forms
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -16,6 +17,7 @@ from django.http import HttpResponseRedirect
 # from localflavor.us.models import USStateField
 
 from carts.models import Cart
+from django.core.validators import ValidationError
 
 
 import braintree
@@ -113,9 +115,10 @@ COUPON_CHOICES = (
 class CouponCode(models.Model):
 	name = models.CharField(max_length=12, unique=True)
 	status = models.CharField(max_length=15, choices=COUPON_CHOICES, default='$')
-	discount_value = models.DecimalField(decimal_places=2, max_digits=5)
+	discount_value = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
 	start_date = models.DateField(null=True, blank=True)
 	expiration_date = models.DateField(null=True, blank=True)
+	active = models.BooleanField(default=True)
 
 	def __unicode__(self):
 		return self.name
@@ -166,6 +169,7 @@ class Order(models.Model):
 			weight += i.quantity * i.item.product.weight
 		return weight
 
+
 def order_pre_save(sender, instance, *args, **kwargs):
 	# state = instance.shipping_address.state
 	# country = instance.shipping_address.country
@@ -185,16 +189,17 @@ def order_pre_save(sender, instance, *args, **kwargs):
 	# print weight
 	# print shipping_price
 	
-	cart_total = instance.cart.total
-
-	order_total = Decimal(instance.shipping_price) + Decimal(instance.cart.total)
+	#cart_total = instance.cart.total
+	print instance.order_total
+	#order_total = Decimal(instance.shipping_price) + Decimal(instance.cart.total)
 
 	# instance.shipping_price = shipping_price
-	instance.order_total = order_total
+	#instance.order_total = order_total
 
 pre_save.connect(order_pre_save, sender=Order)
 
 def order_post_save(sender, instance, *args, **kwargs):
+
 	if instance.status == "shipped" or instance.status == "refunded":
 		order = instance
 		print "shipped!"

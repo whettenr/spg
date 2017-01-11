@@ -1,4 +1,5 @@
 import braintree
+from decimal import Decimal
 
 from django.conf import settings
 from django.core.mail import EmailMessage
@@ -43,7 +44,7 @@ class ItemCountView(View):
 				count = 0
 			else:
 				cart = Cart.objects.get(id=cart_id)
-				count = cart.items.count()
+				count = cart.total_item
 			request.session["cart_item_count"] = count
 			return JsonResponse({"count": count})
 		else:
@@ -159,6 +160,22 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 			return None
 		return cart
 
+	def get(self, request, *args, **kwargs):
+		get_data = super(CheckoutView, self).get(request, *args, **kwargs)
+		cart = self.get_object()
+		if cart == None:
+			return redirect("cart")
+		new_order = self.get_order()
+		user_checkout_id = request.session.get("user_checkout_id")
+		if user_checkout_id != None:
+			user_checkout = UserCheckout.objects.get(id=user_checkout_id)
+			if new_order.shipping_address == None:
+			 	return redirect("order_address")
+			new_order.user = user_checkout
+			new_order.save()
+		return get_data
+
+
 	def get_context_data(self, *args, **kwargs):
 		context = super(CheckoutView, self).get_context_data(*args, **kwargs)
 		user_can_continue = False
@@ -190,48 +207,52 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		return context
 
 	def post(self, request, *args, **kwargs):
-		print 'cruel world!'
 		self.object = self.get_object()
 		form = self.get_form()
 
-
 		coupon_form = self.coupon_form(request.POST)
+		
 		if coupon_form.is_valid():
-		# coupon_form = self.coupon_form
-		# if '_coupon' in self.request.POST:
-			print 'Goodbye, cruel world!'
-			print coupon_form.cleaned_data['coupon_code']
-			code = coupon_form.cleaned_data['coupon_code']
-			try:
-				check = CouponCode.objects.get(name=code)
-			except:
-				check = None
-			if check == None:
-				messages.error(self.request, "Coupon Code was not found")
-			else:
-				messages.success(self.request, "YAY!!")
+			if '_remove' in self.request.POST:
+				print "hi"
 				order = self.get_order()
 				if order.coupon:
-					messages.error(self.request, "A coupon has already been applied to this order")
+					order.coupon = None
+					messages.success(self.request, "Coupon code was removed!")
+					order.save()
 				else:
-					if check.start_date < date.today():
-						messages.error(self.request, "This coupon code has not been inititated yet. Contact us for more info.")
-					elif check.expiration_date > date.today():
-						messages.error(self.request, "This coupon code has been expired.")
+					messages.error(self.request, "No coupon to be removed from order")
+
+			elif '_coupon' in self.request.POST:
+				code = coupon_form.cleaned_data['coupon_code']
+				try:
+					check = CouponCode.objects.get(name=code)
+				except:
+					check = None
+				if check == None:
+					messages.error(self.request, "Coupon Code was not found")
+				else:
+					order = self.get_order()
+					if order.coupon:
+						messages.error(self.request, "A coupon has already been applied to this order. Remove coupon first to use another")
 					else:
-						order.coupon = check
-						if order.coupon.status == '%':
-							print " here"
-
-							order.order_total = order.order_toal - order.order_total * (check.discount_value/100)
-						elif order.coupon.status == '$':
-							print "in "
-
-							order.order_total = order.order_total - check.discount_value
+						if check.start_date < date.today():
+							messages.error(self.request, "This coupon code has not been inititated yet. Contact us for more info.")
+						elif check.expiration_date > date.today():
+							messages.error(self.request, "This coupon code has been expired.")
+						elif not check.active:
+							messages.error(self.request, "This coupon code has not been activated.")
 						else:
-							print "in here"
-							order.order_total = order.order_total - order.shipping_price
-						order.save()
+							order.coupon = check
+							messages.success(self.request, "Coupon code " + check.name + " was applied!")
+							if order.coupon.status == '%':
+								order.order_total = order.order_total - order.cart.total*(order.coupon.discount_value/100)
+							elif order.coupon.status == '$':
+								order.order_total = order.order_total - order.coupon.discount_value
+							elif order.coupon.status == 'free shipping':
+								order.order_total = order.order_total - order.shipping_price
+								order.shipping_price = 0.00
+							order.save()
 
 
 
@@ -248,28 +269,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		return reverse("checkout")
 
 
-	def get(self, request, *args, **kwargs):
-		get_data = super(CheckoutView, self).get(request, *args, **kwargs)
-		cart = self.get_object()
-		if cart == None:
-			return redirect("cart")
-		new_order = self.get_order()
-		user_checkout_id = request.session.get("user_checkout_id")
-		if user_checkout_id != None:
-			user_checkout = UserCheckout.objects.get(id=user_checkout_id)
-			if new_order.shipping_address == None:
-			 	return redirect("order_address")
-			new_order.user = user_checkout
 
-			print new_order		
-			print new_order.shipping_price
-			print new_order.order_weight
-			self.find_shipping_info(new_order)
-			print new_order		
-			print new_order.shipping_price
-			print new_order.order_weight
-			new_order.save()
-		return get_data
 
 
 

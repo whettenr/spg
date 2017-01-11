@@ -115,6 +115,8 @@ class AddressSelectFormView(CartOrderMixin, FormView):
 				print address.active
 
 				return redirect("/checkout/address/")
+			else:
+				messages.error(self.request, "Please select shipping address to remove")
 		# if '_edit' in self.request.POST:
 		# 	if shipping_address:
 		# 		return redirect("/checkout/address/edit/" + str(shipping_address.pk))

@@ -19,17 +19,55 @@
 
 
 <table class='table'>
-
-<tr><td>{{ order.cart.cartitem_set.count }} Item(s): <br/>{% for i in order.cart.cartitem_set.all %}
-<b>{{ i.item.get_title }}</b><br/>
+<tr><td>{{ order.cart.total_item }} Item(s): <br/>{% for i in order.cart.cartitem_set.all %}
+<b>Quantity: {{ i.quantity }} {{ i.item.get_title }}</b><br/>
 {% endfor %}</td></tr>
 <tr><td>Cart Subtotal: {{ order.cart.subtotal }}</td></tr>
 <tr><td>Tax: {{ order.cart.tax_total }}</td></tr>
-<tr><td>Items Total: {{ order.cart.total }}</td></tr>
+<tr><td>Cart Total: {{ order.cart.total }}</td></tr>
+
+{% if order.coupon %}
+<tr><td style="color: red">Coupon Used: {{ order.coupon.name }}</td></tr>
+	{% if order.coupon.status != 'free shipping'%}
+		<tr><td>Shipping: {{ order.shipping_price }}</td></tr>
+	{% else %}
+		<tr><td style="color: red">Shipping: $ 0.00 (coupon applied)</td></tr>
+	{% endif %}
+
+	<tr><td>Order Total: {{ order.order_total }} 
+		<em style="color: red">
+		{% if order.coupon.status == '%' %}
+			({{order.coupon.discount_value}}% off) 
+		{% elif order.coupon.status == '$' %}
+			( ${{ order.coupon.discount_value }} off )
+		{% endif %}
+		</em>
+	</td></tr>
+{% else %}
 
 <tr><td>Shipping: {{ order.shipping_price }}</td></tr>
+
 <tr><td>Order Total: {{ order.order_total }}</td></tr>
 
+{% endif %}
+
+</table>
+<table class="table table-bordered">
+  <th colspan="3">Outer Table</th>
+  <tr>
+    <td>This is row one, column 1</td>
+    <td>This is row one, column 2</td>
+    <td>
+     <table class="table table-bordered">
+       <th colspan="3">Inner Table</th>
+       <tr>
+         <td>This is row one, column 1</td>
+         <td>This is row one, column 2</td>
+         <td>This is row one, column 3</td>
+       </tr>
+     </table>
+    </td>
+  </tr>
 </table>
 </div>
 
