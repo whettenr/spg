@@ -221,10 +221,15 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 					else:
 						order.coupon = check
 						if order.coupon.status == '%':
-							order_total = order.order_toal - order.order_total * (check.discount_value/100)
+							print " here"
+
+							order.order_total = order.order_toal - order.order_total * (check.discount_value/100)
 						elif order.coupon.status == '$':
+							print "in "
+
 							order.order_total = order.order_total - check.discount_value
 						else:
+							print "in here"
 							order.order_total = order.order_total - order.shipping_price
 						order.save()
 
