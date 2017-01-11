@@ -5,6 +5,7 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 # from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
+from datetime import date
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Context
@@ -212,9 +213,20 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 				order = self.get_order()
 				if order.coupon:
 					messages.error(self.request, "A coupon has already been applied to this order")
-				else: 
-					order.coupon = check
-					order.save()
+				else:
+					if check.start_date < date.today():
+						messages.error(self.request, "This coupon code has not been inititated yet. Contact us for more info.")
+					else if check.expiration_date > date.today():
+						messages.error(self.request, "This coupon code has been expired.")
+					else:
+						order.coupon = check
+						if order.coupon.status == '%':
+							order_total = order.order_toal - order.order_total * (check.discount_value/100)
+						else if order.coupon.status == '$':
+							order.order_total = order.order_total - check.discount_value
+						else order.coupon.status == 'free shipping':
+							order.order_total = order.order_total - order.order_shipping_price
+						order.save()
 
 
 
