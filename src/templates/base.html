@@ -38,20 +38,18 @@
       <li class="breadcrumb-item"><a href="#">Library</a></li>
       <li class="breadcrumb-item active float-xs-right"><a href="#">Data</a></li>
     </ol> -->
-    {% if messages %}
+    {% for message in messages %}
     <div class='container'>
-      <div class='alert alert-success text-center alert-dismissible'>
+      <div class='alert alert-{{ message.tags }} alert-dismissible'>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        {% for message in messages %}
           {% if 'safe' in message.tags %}
-            <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+            <p>{{ message|safe }}</p>
           {% else %}
-            <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            <p>{{ message }}</p>
           {% endif %}
-        {% endfor %}
       </div>
     </div>
-    {% endif %}
+    {% endfor %}
 
     {% block jumbotron %}{% endblock %}
 

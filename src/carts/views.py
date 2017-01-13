@@ -236,9 +236,9 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 					if order.coupon:
 						messages.error(self.request, "A coupon has already been applied to this order. Remove coupon first to use another")
 					else:
-						if check.start_date < date.today():
+						if check.start_date > date.today():
 							messages.error(self.request, "This coupon code has not been inititated yet. Contact us for more info.")
-						elif check.expiration_date > date.today():
+						elif check.expiration_date < date.today():
 							messages.error(self.request, "This coupon code has been expired.")
 						elif not check.active:
 							messages.error(self.request, "This coupon code has not been activated.")

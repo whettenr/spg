@@ -4,32 +4,16 @@ html {
   min-height: 100%;
 }
 body {
-  margin-bottom: 12.5em;
+  padding-top: 70px;
 }
 
 .footer {
-  position: absolute;
-  bottom: 0;
   width: 100%;
-  min-height: 12.5em;
-  line-height: 20px; 
   background-color: #f0f0f0;
   padding-top: 15px;
 }
 
 /* ----- nav ----- */
-
-.navbar {
-  margin-bottom: 10px;
-}
-
-.login {
-  padding: 8px 8px;
-}
-
-.small-search {
-  display: none;
-}
 
 .wmd-panel{
     margin-right: 0px !important;
@@ -42,9 +26,6 @@ body {
 
 .search  .control-label {
   font-weight: bold;
-}
-.search a {
-  margin-top: 5px;
 }
 
 .comment-reply{
@@ -59,10 +40,6 @@ body {
 .fa-navbar-cart {
 	font-size: 18px;
   vertical-align: middle;
-}
-
-.alert {
-  padding-bottom: 0;
 }
 
 .bot {
@@ -115,9 +92,20 @@ body {
     margin-top: 15px;
 }
 
-nav .btn-block {
-  display: inline-block;
+
+.btn-face-nav {
+  width: 100%;
 }
+
+.face-nav-fa {
+  vertical-align: middle;
+}
+
+.face-nav-p {
+  vertical-align: middle;
+  display: inline;
+}
+
 
 
 /* Makes images fully responsive */
@@ -182,36 +170,6 @@ nav .btn-block {
 
   .container {
     max-width: 1000px;
-  }
-
-}
-
-@media screen and (max-width: 575px) {
-
-  .search {
-    display: none;
-  }
-
-}
-
-@media screen and (max-width: 992px) {
-
-  .small-search {
-    display: block;
-    float: right;
-  }
-
-  .small-search input {
-    float: left;
-    display:inline;
-    width: auto;
-  }
-  .small-search button {
-    float: left;
-  }
-
-  .big-search {
-    display: none;
   }
 
 }

@@ -84,8 +84,8 @@ braintree.setup(clientToken, "dropin", {
 <div class='col-sm-6 offset-sm-3 text-center'>
 <form action="" method="POST">
     {% csrf_token %}
-    {{ coupon_form|crispy}}
-    <input class="btn btn-primary" type="submit" value="Submit" name='_coupon' />
+    {{coupon_form|crispy}}
+    <input class="btn btn-primary" type="submit" value="Submit" name='_coupon' {% if order.coupon %}disabled{% endif %}/>
     <input class="btn btn-danger" type="submit" value="Remove" name='_remove' />
 
 </form>
